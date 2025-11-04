@@ -6927,7 +6927,6 @@ static void handleModularFormat(Sema &S, Decl *D, const ParsedAttr &AL) {
   llvm::sort(Aspects);
   Aspects.erase(llvm::unique(Aspects), Aspects.end());
 
-  // TODO: Type checking on identifier
   D->addAttr(::new (S.Context) ModularFormatAttr(
       S.Context, AL, AL.getArgAsIdent(0)->getIdentifierInfo(), ImplName,
       Aspects.data(), Aspects.size()));
