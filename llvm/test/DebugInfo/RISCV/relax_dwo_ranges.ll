@@ -50,7 +50,7 @@
 
 ; clang -g -S -gsplit-dwarf --target=riscv64 -march=rv64gc -O0 relax_dwo_ranges.cpp
 
-; RELOCS-NOT: warning: unexpected relocations for dwo section '.debug_info.dwo'
+; RELOCS-NOT: warning:
 
 ; Make sure we don't produce any relocations in any .dwo section
 ; HDR-NOT: .rela.{{.*}}.dwo
