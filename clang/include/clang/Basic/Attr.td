@@ -5320,11 +5320,8 @@ def NonString : InheritableAttr {
 
 def ModularFormat : InheritableAttr {
   let Spellings = [Clang<"modular_format">];
-  let Args = [
-    IdentifierArgument<"ModularImplFn">,
-    StringArgument<"ImplName">,
-    VariadicStringArgument<"Aspects">
-  ];
+  let Args = [IdentifierArgument<"ModularImplFn">, StringArgument<"ImplName">,
+              VariadicStringArgument<"Aspects">];
   let Subjects = SubjectList<[Function]>;
   let Documentation = [ModularFormatDocs];
 }
