@@ -27,6 +27,7 @@
 #include "llvm/IR/DebugInfo.h"
 #include "llvm/IR/GlobalVariable.h"
 #include "llvm/MC/MCAsmInfo.h"
+#include "llvm/MC/MCObjectStreamer.h"
 #include "llvm/MC/MCSection.h"
 #include "llvm/MC/MCStreamer.h"
 #include "llvm/MC/MCSymbol.h"
@@ -494,7 +495,7 @@ void DwarfCompileUnit::attachLowHighPC(DIE &D, const MCSymbol *Begin,
 
   addLabelAddress(D, dwarf::DW_AT_low_pc, Begin);
   if (DD->getDwarfVersion() >= 4 &&
-      (!isDwoUnit() || !llvm::isRangeRelaxable(Begin, End))) {
+      (!isDwoUnit() || llvm::absoluteSymbolDiff(Begin, End).has_value())) {
     addLabelDelta(D, dwarf::DW_AT_high_pc, End, Begin);
     return;
   }
