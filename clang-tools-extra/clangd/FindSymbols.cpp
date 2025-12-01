@@ -13,7 +13,10 @@
 #include "Quality.h"
 #include "SourceCode.h"
 #include "index/Index.h"
+#include "index/Symbol.h"
+#include "index/SymbolLocation.h"
 #include "support/Logger.h"
+#include "clang/AST/Decl.h"
 #include "clang/AST/DeclFriend.h"
 #include "clang/AST/DeclTemplate.h"
 #include "clang/Index/IndexSymbol.h"
@@ -23,7 +26,6 @@
 #include "llvm/ADT/StringRef.h"
 #include <limits>
 #include <optional>
-#include <tuple>
 
 #define DEBUG_TYPE "FindSymbols"
 

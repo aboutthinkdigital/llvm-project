@@ -13,14 +13,16 @@
 #define LLVM_CLANG_TOOLS_EXTRA_CLANGD_FINDSYMBOLS_H
 
 #include "Protocol.h"
-#include "index/Symbol.h"
 #include "llvm/ADT/StringRef.h"
-#include "clang/AST/Decl.h"
 
 namespace clang {
+class NamedDecl;
+
 namespace clangd {
 class ParsedAST;
 class SymbolIndex;
+struct Symbol;
+struct SymbolLocation;
 
 /// Helper function for deriving an LSP Location from an index SymbolLocation.
 llvm::Expected<Location> indexToLSPLocation(const SymbolLocation &Loc,
