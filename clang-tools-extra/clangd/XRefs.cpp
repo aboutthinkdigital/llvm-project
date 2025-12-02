@@ -1860,8 +1860,6 @@ symbolToCallHierarchyItem(const Symbol &S, PathRef TUPath) {
   if (!Result)
     return Result;
   Result->data = S.ID.str();
-  if (S.Flags & Symbol::Deprecated)
-    Result->tags.push_back(SymbolTag::Deprecated);
   return Result;
 }
 
