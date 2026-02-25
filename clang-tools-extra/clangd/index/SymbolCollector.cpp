@@ -11,6 +11,7 @@
 #include "CodeComplete.h"
 #include "CodeCompletionStrings.h"
 #include "ExpectedTypes.h"
+#include "FindSymbols.h"
 #include "SourceCode.h"
 #include "URI.h"
 #include "clang-include-cleaner/Analysis.h"
@@ -1126,6 +1127,9 @@ const Symbol *SymbolCollector::addDeclaration(const NamedDecl &ND, SymbolID ID,
       S.Documentation = Documentation;
     }
   };
+
+  S.Tags = computeSymbolTags(ND);
+
   if (!(S.Flags & Symbol::IndexedForCodeCompletion)) {
     if (Opts.StoreAllDocumentation)
       UpdateDoc();
@@ -1192,7 +1196,7 @@ void SymbolCollector::addDefinition(const NamedDecl &ND, const Symbol &DeclSym,
       S.Flags |= Symbol::HasDocComment;
     S.Documentation = Documentation;
   }
-
+  S.Tags |= computeSymbolTags(ND);
   Symbols.insert(S);
 }
 
