@@ -1,0 +1,95 @@
+CallHierarchy benchmark results on the branch users/ratzdi/symbol_tags_in_call_type_hierarchies_and_symbol_info.
+The benchmark was run with the following command:
+master@dominator:~/workspace/advantech/llvm-project/clang-tools-extra/clangd/benchmarks$ ./benchmark_callhierarchy.sh -n 10
+============================================================
+  clangd CallHierarchy Benchmark
+  build-dir : /home/master/workspace/advantech/llvm-project/clang-tools-extra/clangd/benchmarks/../../../build-debug
+  work-dir  : /tmp/chbench
+  runs/scenario : 10
+  min-time  : 0.05s
+============================================================
+
+  Scenario                        Benchmark             Median        P95           Mean          Stdev       N
+  --------------------------------------------------------------------------------------------------------------
+
+── Scenario: Chain-200 ─────────────────────────────
+   Generating code (topology=chain) ...
+   Indexing /tmp/chbench/chain_small.cpp ...
+   Index size: 20162
+   Running 10 benchmark run(s) ...
+     run 10/10
+  Chain-200                       BM_incomingCalls      median=24.335 us     p95=27.662 us     mean=24.805 us     stdev=1.121 us    n=10
+  Chain-200                       BM_indexBuild         median=3.550 ms      p95=3.605 ms      mean=3.558 ms      stdev=31.907 us   n=10
+  Chain-200                       BM_outgoingCalls      median=14.275 us     p95=14.999 us     mean=14.370 us     stdev=295 ns      n=10
+
+── Scenario: Chain-5000 ─────────────────────────────
+   Generating code (topology=chain) ...
+   Indexing /tmp/chbench/chain_large.cpp ...
+   Index size: 521950
+   Running 10 benchmark run(s) ...
+     run 10/10
+  Chain-5000                      BM_incomingCalls      median=24.691 us     p95=24.927 us     mean=24.696 us     stdev=165 ns      n=10
+  Chain-5000                      BM_indexBuild         median=89.162 ms     p95=90.033 ms     mean=89.178 ms     stdev=669.316 us  n=10
+  Chain-5000                      BM_outgoingCalls      median=14.536 us     p95=14.696 us     mean=14.511 us     stdev=108 ns      n=10
+
+── Scenario: Hub-100-callers ─────────────────────────────
+   Generating code (topology=hub) ...
+   Indexing /tmp/chbench/hub_small.cpp ...
+   Index size: 9530
+   Running 10 benchmark run(s) ...
+     run 10/10
+  Hub-100-callers                 BM_incomingCalls      median=1.126 ms      p95=1.136 ms      mean=1.125 ms      stdev=7.444 us    n=10
+  Hub-100-callers                 BM_indexBuild         median=2.043 ms      p95=2.214 ms      mean=2.065 ms      stdev=55.258 us   n=10
+  Hub-100-callers                 BM_outgoingCalls      median=14.249 us     p95=14.378 us     mean=14.254 us     stdev=65 ns       n=10
+
+── Scenario: Hub-2000-callers ─────────────────────────────
+   Generating code (topology=hub) ...
+   Indexing /tmp/chbench/hub_large.cpp ...
+   Index size: 205610
+   Running 10 benchmark run(s) ...
+     run 10/10
+  Hub-2000-callers                BM_incomingCalls      median=23.304 ms     p95=23.754 ms     mean=23.287 ms     stdev=219.256 us  n=10
+  Hub-2000-callers                BM_indexBuild         median=39.112 ms     p95=40.052 ms     mean=39.197 ms     stdev=373.031 us  n=10
+  Hub-2000-callers                BM_outgoingCalls      median=14.462 us     p95=14.950 us     mean=14.500 us     stdev=208 ns      n=10
+
+── Scenario: Fanout-100-callees ─────────────────────────────
+   Generating code (topology=fanout) ...
+   Indexing /tmp/chbench/fanout_small.cpp ...
+   Index size: 11112
+   Running 10 benchmark run(s) ...
+     run 10/10
+  Fanout-100-callees              BM_incomingCalls      median=14.800 us     p95=14.983 us     mean=14.829 us     stdev=83 ns       n=10
+  Fanout-100-callees              BM_indexBuild         median=2.555 ms      p95=2.599 ms      mean=2.562 ms      stdev=15.592 us   n=10
+  Fanout-100-callees              BM_outgoingCalls      median=1.147 ms      p95=1.186 ms      mean=1.148 ms      stdev=14.626 us   n=10
+
+── Scenario: Fanout-2000-callees ─────────────────────────────
+   Generating code (topology=fanout) ...
+   Indexing /tmp/chbench/fanout_large.cpp ...
+   Index size: 239598
+   Running 10 benchmark run(s) ...
+     run 10/10
+  Fanout-2000-callees             BM_incomingCalls      median=14.886 us     p95=15.162 us     mean=14.917 us     stdev=109 ns      n=10
+  Fanout-2000-callees             BM_indexBuild         median=49.220 ms     p95=49.474 ms     mean=49.127 ms     stdev=300.332 us  n=10
+  Fanout-2000-callees             BM_outgoingCalls      median=24.394 ms     p95=24.916 ms     mean=24.406 ms     stdev=210.056 us  n=10
+
+── Scenario: Mixed-500x500 ─────────────────────────────
+   Generating code (topology=mixed) ...
+   Indexing /tmp/chbench/mixed.cpp ...
+   Index size: 111196
+   Running 10 benchmark run(s) ...
+     run 10/10
+  Mixed-500x500                   BM_incomingCalls      median=5.630 ms      p95=5.996 ms      mean=5.697 ms      stdev=141.995 us  n=10
+  Mixed-500x500                   BM_indexBuild         median=22.740 ms     p95=23.951 ms     mean=22.944 ms     stdev=500.773 us  n=10
+  Mixed-500x500                   BM_outgoingCalls      median=5.718 ms      p95=6.801 ms      mean=5.835 ms      stdev=350.488 us  n=10
+
+── Scenario: Tree-depth10 ─────────────────────────────
+   Generating code (topology=tree) ...
+   Indexing /tmp/chbench/tree.cpp ...
+   Index size: 216296
+   Running 10 benchmark run(s) ...
+     run 10/10
+  Tree-depth10                    BM_incomingCalls      median=14.630 us     p95=14.803 us     mean=14.616 us     stdev=97 ns       n=10
+  Tree-depth10                    BM_indexBuild         median=44.804 ms     p95=45.358 ms     mean=44.792 ms     stdev=263.919 us  n=10
+  Tree-depth10                    BM_outgoingCalls      median=24.694 us     p95=24.901 us     mean=24.679 us     stdev=138 ns      n=10
+
+Done.  Raw data in /tmp/chbench/
