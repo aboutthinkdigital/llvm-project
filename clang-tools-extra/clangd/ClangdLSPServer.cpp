@@ -138,7 +138,7 @@ CodeAction toCodeAction(const Fix &F, const URIForFile &File,
       Edit.edits.push_back(
           {E.range, E.newText, SupportChangeAnnotation ? E.annotationId : ""});
     if (SupportChangeAnnotation) {
-      for (const auto &[AID, Annotation] : F.Annotations)
+      for (const auto &[AID, Annotation]: F.Annotations)
         Action.edit->changeAnnotations[AID] = Annotation;
     }
   }
@@ -1350,8 +1350,7 @@ void ClangdLSPServer::onResolveTypeHierarchy(
         }
         Reply(serializeTHIForExtension(std::move(**Resp)));
       };
-  Server->resolveTypeHierarchy(Params.item.uri.file(), Params.item,
-                               Params.resolve, Params.direction,
+  Server->resolveTypeHierarchy(Params.item, Params.resolve, Params.direction,
                                std::move(Serialize));
 }
 
@@ -1365,13 +1364,13 @@ void ClangdLSPServer::onPrepareTypeHierarchy(
 void ClangdLSPServer::onSuperTypes(
     const ResolveTypeHierarchyItemParams &Params,
     Callback<std::optional<std::vector<TypeHierarchyItem>>> Reply) {
-  Server->superTypes(Params.item.uri.file(), Params.item, std::move(Reply));
+  Server->superTypes(Params.item, std::move(Reply));
 }
 
 void ClangdLSPServer::onSubTypes(
     const ResolveTypeHierarchyItemParams &Params,
     Callback<std::vector<TypeHierarchyItem>> Reply) {
-  Server->subTypes(Params.item.uri.file(), Params.item, std::move(Reply));
+  Server->subTypes(Params.item, std::move(Reply));
 }
 
 void ClangdLSPServer::onPrepareCallHierarchy(
@@ -1384,7 +1383,7 @@ void ClangdLSPServer::onPrepareCallHierarchy(
 void ClangdLSPServer::onCallHierarchyIncomingCalls(
     const CallHierarchyIncomingCallsParams &Params,
     Callback<std::vector<CallHierarchyIncomingCall>> Reply) {
-  Server->incomingCalls(Params.item.uri.file(), Params.item, std::move(Reply));
+  Server->incomingCalls(Params.item, std::move(Reply));
 }
 
 void ClangdLSPServer::onClangdInlayHints(const InlayHintsParams &Params,
@@ -1429,7 +1428,7 @@ void ClangdLSPServer::onInlayHint(const InlayHintsParams &Params,
 void ClangdLSPServer::onCallHierarchyOutgoingCalls(
     const CallHierarchyOutgoingCallsParams &Params,
     Callback<std::vector<CallHierarchyOutgoingCall>> Reply) {
-  Server->outgoingCalls(Params.item.uri.file(), Params.item, std::move(Reply));
+  Server->outgoingCalls(Params.item, std::move(Reply));
 }
 
 void ClangdLSPServer::applyConfiguration(
