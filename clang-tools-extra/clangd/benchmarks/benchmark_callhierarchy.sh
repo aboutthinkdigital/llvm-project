@@ -31,6 +31,10 @@ BENCH_MIN_TIME="0.05s"
 BENCH_FILTER=""
 SCENARIOS="chain_small,chain_large,hub_small,hub_large,fanout_small,fanout_large,mixed,tree"
 
+# Aggregate statistics across scenarios.
+declare -a INDEX_SIZE_BYTES_ALL=()
+declare -a INDEX_SYMBOLS_ALL=()
+
 while getopts "b:o:n:t:f:s:h" opt; do
   case $opt in
     b) BUILD_DIR="$OPTARG" ;;
@@ -101,6 +105,36 @@ print(f"  {label:30s}  {bench:20s}  "
 PYEOF
 }
 
+python3_numeric_stats() {
+  python3 - "$@" <<'PYEOF'
+import sys, statistics
+
+label = sys.argv[1]
+unit = sys.argv[2]
+values = list(map(float, sys.argv[3:]))
+if not values:
+    print(f"  {label}: no data")
+    sys.exit(0)
+
+values.sort()
+n = len(values)
+median = statistics.median(values)
+mean = statistics.mean(values)
+stdev = statistics.stdev(values) if n > 1 else 0.0
+
+def fmt(v):
+    if unit == "bytes":
+        if v >= 1024 * 1024:
+            return f"{int(v)} B ({v/(1024*1024):.2f} MiB)"
+        if v >= 1024:
+            return f"{int(v)} B ({v/1024:.2f} KiB)"
+        return f"{int(v)} B"
+    return f"{int(v)}"
+
+print(f"  {label}: median={fmt(median)}  mean={fmt(mean)}  stdev={fmt(stdev)}  n={n}")
+PYEOF
+}
+
 # ─── run one scenario ─────────────────────────────────────────────────────────
 run_scenario() {
   local name="$1"
@@ -144,7 +178,21 @@ run_scenario() {
   # 2. Build index
   echo "   Indexing $src ..."
   "$INDEXER" "$src" -- > "$idx" 2>/dev/null
-  echo "   Index size: $(du -shb "$idx" | cut -f1)"
+
+  # Build YAML sidecar once to extract stable counters (symbols/refs/relations).
+  local idx_yaml="$raw_dir/index.yaml"
+  "$INDEXER" --format=yaml "$src" -- > "$idx_yaml" 2>/dev/null
+
+  local idx_bytes symbol_count ref_bundle_count relation_count
+  idx_bytes=$(stat -c '%s' "$idx")
+  symbol_count=$(grep -c '^--- !Symbol$' "$idx_yaml" || true)
+  ref_bundle_count=$(grep -c '^--- !Refs$' "$idx_yaml" || true)
+  relation_count=$(grep -c '^--- !Relation$' "$idx_yaml" || true)
+
+  INDEX_SIZE_BYTES_ALL+=("$idx_bytes")
+  INDEX_SYMBOLS_ALL+=("$symbol_count")
+
+  echo "   Index stats: size=${idx_bytes} B, symbols=${symbol_count}, ref-bundles=${ref_bundle_count}, relations=${relation_count}"
 
   # 3. Run benchmark N times
   echo "   Running $RUNS benchmark run(s) ..."
@@ -202,6 +250,11 @@ for scen in "${SCEN_LIST[@]}"; do
     run_scenario "$scen"
   fi
 done
+
+echo ""
+echo "Index summary over executed scenarios:"
+python3_numeric_stats "Index size" "bytes" "${INDEX_SIZE_BYTES_ALL[@]}"
+python3_numeric_stats "Symbol count" "count" "${INDEX_SYMBOLS_ALL[@]}"
 
 echo ""
 echo "Done.  Raw data in $WORK_DIR/"
